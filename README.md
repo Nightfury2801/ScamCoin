@@ -1,0 +1,1 @@
+#Cryptocurrency to demonstrate mining
