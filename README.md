@@ -1,1 +1,1 @@
-#Cryptocurrency to demonstrate mining
+# Cryptocurrency to demonstrate mining
