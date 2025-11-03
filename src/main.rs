@@ -1,5 +1,6 @@
-use std::fs::File;
 use std::io;
+use std::fs::File;
+use io::Read;
 use std::path::Path;
 
 /*
@@ -10,9 +11,9 @@ the lock.
 
 const CHAIN_PATH: &str = "/tmp/scamcoin.chain";
 
-fn main() -> Result<(), std::io::Error> {
+fn main() -> Result<(), io::Error> {
 	// check if file is there. open if it is
-	let file = if !Path::new(CHAIN_PATH).is_file() {
+	let mut file = if !Path::new(CHAIN_PATH).is_file() {
 		File::create(CHAIN_PATH)
 			.expect("Couldn't create blockchain file\n")
 	}
@@ -26,9 +27,12 @@ fn main() -> Result<(), std::io::Error> {
 	file.lock()?;
 
 	println!("file locked");
-	let bytes: Vec<u8> = std::fs::read(CHAIN_PATH)?;
+
+	let mut bytes: [u8; 1024] = [0; 1024];
+	file.read(&mut bytes)?;
 
 	for i in bytes {
+		if i == 0 { break }
 		println!("Read bytes: {}", i);
 	}
 
