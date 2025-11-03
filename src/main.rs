@@ -9,18 +9,16 @@ reading or writing data to the file, it just stops programs that do implement
 the lock.
 */
 
-const CHAIN_PATH: &str = "/tmp/scamcoin.chain";
+const CHAIN_PATH: &str = "./scamcoin.chain";
 
 fn main() -> Result<(), io::Error> {
 	// check if file is there. open if it is
-	let mut file = if !Path::new(CHAIN_PATH).is_file() {
+	if !Path::new(CHAIN_PATH).is_file() {
 		File::create(CHAIN_PATH)
-			.expect("Couldn't create blockchain file\n")
+			.expect("Couldn't create blockchain file\n");
 	}
-	else {
-		File::open(CHAIN_PATH)
-			.expect("Couldn't open file\n")
-	};
+	let mut file = File::open(CHAIN_PATH)
+		.expect("Couldn't open file\n");
 
 	// lock the file and read it
 	println!("Trying to acquire file lock");
@@ -29,7 +27,8 @@ fn main() -> Result<(), io::Error> {
 	println!("file locked");
 
 	let mut bytes: [u8; 1024] = [0; 1024];
-	file.read(&mut bytes)?;
+	let n = file.read(&mut bytes)?;
+	println!("read {n} bytes");
 
 	for i in bytes {
 		if i == 0 { break }
